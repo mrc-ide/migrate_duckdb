@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+docker run --rm -it \
+  --mount 'type=volume,src=hint_results,dst=/results' \
+  --name duckdb_migrate \
+  mrcide/duckdb_migrate:latest \
+  results

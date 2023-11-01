@@ -1,0 +1,23 @@
+#!/bin/sh
+
+MIGRATE_DIR=$1
+echo "Migrating: $MIGRATE_DIR"
+
+FILES=`ls $MIGRATE_DIR/*.duckdb`
+
+for FILE in $FILES
+do
+  TMP_STORAGE="$FILE.export"
+  echo "Exporting to $TMP_STORAGE"
+  ./v0.8.1/duckdb $FILE -c "EXPORT DATABASE '$TMP_STORAGE'"
+  SUCCESS=$?
+  if [ $SUCCESS -eq 0 ]; then
+    ./v0.9.1/duckdb $FILE.migrated -c "IMPORT DATABASE '$TMP_STORAGE'"
+    echo "Migrated $FILE"
+    rm -r $TMP_STORAGE
+    mv $FILE $FILE.old
+    mv $FILE.migrated $FILE
+  else
+    echo "Not migrating $FILE as couldn't read it"
+  fi
+done

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+docker push mrcide/duckdb_migrate:latest
